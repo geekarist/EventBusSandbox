@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">EventBusSandBox</string>
+    <string name="title_activity_event_bus_sandbox">EventBusSandbox</string>
+</resources>
