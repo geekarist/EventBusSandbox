@@ -8,10 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import de.greenrobot.event.EventBus;
+
 public class LongitudeFragment extends Fragment {
 
     private TextView textView;
     private double mLongitude;
+
+    private final EventBus mEventBus;
+
+    public LongitudeFragment() {
+        mEventBus = EventBus.getDefault();
+        mEventBus.register(this);
+    }
 
     public void onEvent(CoordinatesUpdated message) {
         mLongitude = message.longitude;
