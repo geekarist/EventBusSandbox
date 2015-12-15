@@ -11,6 +11,16 @@ import android.widget.TextView;
 public class LongitudeFragment extends Fragment {
 
     private TextView textView;
+    private double mLongitude;
+
+    public void onEvent(CoordinatesUpdated message) {
+        mLongitude = message.longitude;
+        updateTextView();
+    }
+
+    private void updateTextView() {
+        textView.setText(getString(R.string.longitude_label, mLongitude));
+    }
 
     @Nullable
     @Override
@@ -18,7 +28,7 @@ public class LongitudeFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View fragmentView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_longitude, container, false);
         textView = (TextView) fragmentView.findViewById(R.id.text_longitude);
-        textView.setText(getString(R.string.longitude_label, 0));
+        updateTextView();
         return fragmentView;
     }
 }

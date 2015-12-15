@@ -2,6 +2,7 @@ package com.github.geekarist.eventbussandbox;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -10,9 +11,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import de.greenrobot.event.EventBus;
+
 public class EventBusSandboxActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String TAG = EventBusSandboxActivity.class.getName();
+
     private GoogleMap mMap;
+    private EventBus mEventBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +28,8 @@ public class EventBusSandboxActivity extends FragmentActivity implements OnMapRe
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        mEventBus = EventBus.getDefault();
     }
-
 
     /**
      * Manipulates the map once available.
@@ -42,5 +48,19 @@ public class EventBusSandboxActivity extends FragmentActivity implements OnMapRe
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions().position(latLng));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                dispatchCoordinates(latLng.latitude, latLng.longitude);
+            }
+        });
+    }
+
+    private void dispatchCoordinates(double latitude, double longitude) {
+        mEventBus.post(new CoordinatesUpdated(latitude, longitude));
     }
 }
